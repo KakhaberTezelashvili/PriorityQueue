@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LeetCodeSolutions
 {
-    // TODO: Comparison stuff to be resolved
+    // TODO: comparison stuff to be resolved
     public class MinHeap<T> where T : IComparable
     {
         private int size = 0;
@@ -43,7 +43,9 @@ namespace LeetCodeSolutions
             HeapifyUp();
         }
 
-        public void HeapifyUp()
+        #region Helpers
+
+        private void HeapifyUp()
         {
             var index = size - 1;
 
@@ -56,7 +58,7 @@ namespace LeetCodeSolutions
             }
         }
 
-        public void HeapifyDown()
+        private void HeapifyDown()
         {
             var index = 0;
 
@@ -79,8 +81,6 @@ namespace LeetCodeSolutions
             }
         }
 
-        #region Helpers
-
         private int GetLeftChildIndex(int parentIndex)
         {
             return parentIndex * 2 + 1;
@@ -95,7 +95,6 @@ namespace LeetCodeSolutions
         {
             return (childIndex - 1) / 2;
         }
-
 
         private bool HasLeftChild(int index)
         {
@@ -114,7 +113,6 @@ namespace LeetCodeSolutions
             var parentIndex = GetParentIndex(index);
             return parentIndex >= 0;
         }
-
 
         private T GetLeftChild(int index)
         {
