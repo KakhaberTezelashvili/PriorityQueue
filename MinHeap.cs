@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace LeetCodeSolutions
 {
+    // TODO: Comparison stuff to be resolved
     public class MinHeap<T> where T : IComparable
     {
         private int size = 0;
