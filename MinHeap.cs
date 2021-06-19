@@ -3,12 +3,24 @@ using System.Collections.Generic;
 
 namespace LeetCodeSolutions
 {
-    // TODO: comparison stuff to be resolved
-    public class MinHeap<T> where T : IComparable
+    public class MinHeap<T>
     {
         private int size = 0;
         private List<T> items = new List<T>();
+        private readonly IComparer<T> comparer;
 
+        public MinHeap()
+        {
+        }
+
+        public MinHeap(IComparer<T> comparer)
+        {
+            this.comparer = comparer;
+        }
+
+        /// <summary>
+        /// retrieves root element
+        /// </summary>
         public T Peek()
         {
             if (size == 0)
@@ -19,6 +31,9 @@ namespace LeetCodeSolutions
             return items[0];
         }
 
+        /// <summary>
+        /// removes root element and returns one
+        /// </summary>
         public T Poll()
         {
             if (size == 0)
@@ -35,6 +50,9 @@ namespace LeetCodeSolutions
             return item;
         }
 
+        /// <summary>
+        /// adds new element
+        /// </summary>
         public void Add(T item)
         {
             items.Add(item);
@@ -49,7 +67,8 @@ namespace LeetCodeSolutions
         {
             var index = size - 1;
 
-            while (HasParent(index) && GetParent(index).CompareTo(items[index]) == 1)
+            // TODO: check if comparer is set, if not use default comparer
+            while (HasParent(index) && comparer.Compare(GetParent(index), items[index]) == 1)
             {
                 var parentIndex = GetParentIndex(index);
 
@@ -66,12 +85,12 @@ namespace LeetCodeSolutions
             {
                 var smallerChildIndex = GetLeftChildIndex(index);
 
-                if (HasRightChild(index) && GetRightChild(index).CompareTo(GetLeftChild(index)) == -1)
+                if (HasRightChild(index) && comparer.Compare(GetRightChild(index), GetLeftChild(index)) == -1)
                 {
                     smallerChildIndex = GetRightChildIndex(index);
                 }
 
-                if (items[index].CompareTo(items[smallerChildIndex]) == -1)
+                if (comparer.Compare(items[index], items[smallerChildIndex]) == -1)
                 {
                     break;
                 }
