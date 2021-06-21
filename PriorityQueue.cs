@@ -6,8 +6,9 @@ namespace LeetCodeSolutions
     // TODO: think about throwing exception
     public class PriorityQueue<TKey, TPriority>
     {
+        private int _capacity = 10;
         private int _size = 0;
-        private IList<KeyValuePair<TKey, TPriority>> _items;
+        private KeyValuePair<TKey, TPriority>[] _items;
         private readonly IComparer<KeyValuePair<TKey, TPriority>> _comparer;
 
         public PriorityQueue(IComparer<KeyValuePair<TKey, TPriority>> comparer)
@@ -16,7 +17,7 @@ namespace LeetCodeSolutions
                 throw new ArgumentNullException();
 
             _comparer = comparer;
-            _items = new List<KeyValuePair<TKey, TPriority>>();
+            _items = new KeyValuePair<TKey, TPriority>[_capacity];
         }
 
         public bool IsEmpty()
@@ -51,7 +52,7 @@ namespace LeetCodeSolutions
 
             _items[0] = _items[_size - 1];
             _size--;
-            
+
             HeapifyDown();
 
             return item;
@@ -62,7 +63,8 @@ namespace LeetCodeSolutions
         /// </summary>
         public void Add(KeyValuePair<TKey, TPriority> item)
         {
-            _items.Add(item);
+            EnsureExtraCapacity();
+            _items[_size] = item;
             _size++;
 
             HeapifyUp();
@@ -74,12 +76,25 @@ namespace LeetCodeSolutions
         {
             var index = _size - 1;
 
+            // move up item till 
             while (HasParent(index) && _comparer.Compare(GetParent(index), _items[index]) == 1)
             {
                 var parentIndex = GetParentIndex(index);
 
                 Swap(parentIndex, index);
                 index = GetParentIndex(index);
+            }
+        }
+
+        private void EnsureExtraCapacity()
+        {
+            if (_size == _capacity)
+            {
+                var biggerArray = new KeyValuePair<TKey, TPriority>[_capacity * 2];
+                _capacity *= 2;
+
+                Array.Copy(_items, biggerArray, _size);
+                _items = biggerArray;
             }
         }
 
