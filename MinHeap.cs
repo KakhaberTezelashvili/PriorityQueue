@@ -3,48 +3,55 @@ using System.Collections.Generic;
 
 namespace LeetCodeSolutions
 {
-    public class MinHeap<T>
+    // TODO: think about throwing exception
+    public class PriorityQueue<TKey, TPriority>
     {
-        private int size = 0;
-        private List<T> items = new List<T>();
-        private readonly IComparer<T> comparer;
+        private int _size = 0;
+        private IList<KeyValuePair<TKey, TPriority>> _items;
+        private readonly IComparer<KeyValuePair<TKey, TPriority>> _comparer;
 
-        public MinHeap()
+        public PriorityQueue(IComparer<KeyValuePair<TKey, TPriority>> comparer)
         {
+            if (comparer == null)
+                throw new ArgumentNullException();
+
+            _comparer = comparer;
+            _items = new List<KeyValuePair<TKey, TPriority>>();
         }
 
-        public MinHeap(IComparer<T> comparer)
+        public bool IsEmpty()
         {
-            this.comparer = comparer;
+            return _size == 0;
         }
 
         /// <summary>
         /// retrieves root element
         /// </summary>
-        public T Peek()
+        public KeyValuePair<TKey, TPriority> Peek()
         {
-            if (size == 0)
+            if (_size == 0)
             {
                 throw new InvalidOperationException();
             }
 
-            return items[0];
+            return _items[0];
         }
 
         /// <summary>
-        /// removes root element and returns one
+        /// removes root element and returns it
         /// </summary>
-        public T Poll()
+        public KeyValuePair<TKey, TPriority> Poll()
         {
-            if (size == 0)
+            if (_size == 0)
             {
                 throw new InvalidOperationException();
             }
 
-            size--;
-            var item = items[0];
+            var item = _items[0];
 
-            items[0] = items[size - 1];
+            _items[0] = _items[_size - 1];
+            _size--;
+            
             HeapifyDown();
 
             return item;
@@ -53,10 +60,10 @@ namespace LeetCodeSolutions
         /// <summary>
         /// adds new element
         /// </summary>
-        public void Add(T item)
+        public void Add(KeyValuePair<TKey, TPriority> item)
         {
-            items.Add(item);
-            size++;
+            _items.Add(item);
+            _size++;
 
             HeapifyUp();
         }
@@ -65,10 +72,9 @@ namespace LeetCodeSolutions
 
         private void HeapifyUp()
         {
-            var index = size - 1;
+            var index = _size - 1;
 
-            // TODO: check if comparer is set, if not use default comparer
-            while (HasParent(index) && comparer.Compare(GetParent(index), items[index]) == 1)
+            while (HasParent(index) && _comparer.Compare(GetParent(index), _items[index]) == 1)
             {
                 var parentIndex = GetParentIndex(index);
 
@@ -85,12 +91,12 @@ namespace LeetCodeSolutions
             {
                 var smallerChildIndex = GetLeftChildIndex(index);
 
-                if (HasRightChild(index) && comparer.Compare(GetRightChild(index), GetLeftChild(index)) == -1)
+                if (HasRightChild(index) && _comparer.Compare(GetRightChild(index), GetLeftChild(index)) == -1)
                 {
                     smallerChildIndex = GetRightChildIndex(index);
                 }
 
-                if (comparer.Compare(items[index], items[smallerChildIndex]) == -1)
+                if (_comparer.Compare(_items[index], _items[smallerChildIndex]) == -1)
                 {
                     break;
                 }
@@ -118,13 +124,13 @@ namespace LeetCodeSolutions
         private bool HasLeftChild(int index)
         {
             var leftChildIndex = GetLeftChildIndex(index);
-            return leftChildIndex < size;
+            return leftChildIndex < _size;
         }
 
         private bool HasRightChild(int index)
         {
             var rightChildIndex = GetRightChildIndex(index);
-            return rightChildIndex < size;
+            return rightChildIndex < _size;
         }
 
         private bool HasParent(int index)
@@ -133,29 +139,29 @@ namespace LeetCodeSolutions
             return parentIndex >= 0;
         }
 
-        private T GetLeftChild(int index)
+        private KeyValuePair<TKey, TPriority> GetLeftChild(int index)
         {
             var leftChildIndex = GetLeftChildIndex(index);
-            return items[leftChildIndex];
+            return _items[leftChildIndex];
         }
 
-        private T GetRightChild(int index)
+        private KeyValuePair<TKey, TPriority> GetRightChild(int index)
         {
             var rightChildIndex = GetRightChildIndex(index);
-            return items[rightChildIndex];
+            return _items[rightChildIndex];
         }
 
-        private T GetParent(int index)
+        private KeyValuePair<TKey, TPriority> GetParent(int index)
         {
             var parentIndex = GetParentIndex(index);
-            return items[parentIndex];
+            return _items[parentIndex];
         }
 
         private void Swap(int indexOne, int indexTwo)
         {
-            var tmp = items[indexOne];
-            items[indexOne] = items[indexTwo];
-            items[indexTwo] = tmp;
+            var tmp = _items[indexOne];
+            _items[indexOne] = _items[indexTwo];
+            _items[indexTwo] = tmp;
         }
 
         #endregion
