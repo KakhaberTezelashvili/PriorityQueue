@@ -11,6 +11,8 @@ namespace LeetCodeSolutions
         private KeyValuePair<TKey, TPriority>[] _items;
         private readonly IComparer<KeyValuePair<TKey, TPriority>> _comparer;
 
+        public int Size => _size;
+
         public PriorityQueue(IComparer<KeyValuePair<TKey, TPriority>> comparer)
         {
             if (comparer == null)
