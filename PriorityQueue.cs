@@ -183,4 +183,20 @@ namespace LeetCodeSolutions
 
         #endregion
     }
+    
+    public class MinComparer : IComparer<KeyValuePair<int, int>>
+    {
+        public int Compare(KeyValuePair<int, int> x, KeyValuePair<int, int> y)
+        {
+            return x.Value.CompareTo(y.Value);
+        }
+    }
+
+    public class MaxComparer : IComparer<KeyValuePair<int, int>>
+    {
+        public int Compare(KeyValuePair<int, int> x, KeyValuePair<int, int> y)
+        {
+            return x.Value.CompareTo(y.Value) * -1;
+        }
+    }
 }
